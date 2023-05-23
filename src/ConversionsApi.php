@@ -14,6 +14,8 @@ class ConversionsApi
 {
     protected EventCollection $events;
     protected UserData $userData;
+    protected $pixel_id;
+    protected $test_code;
 
     public function __construct($access_token = NULL)
     {
@@ -66,12 +68,26 @@ class ConversionsApi
         return $this->setEvents([]);
     }
 
+    public function setPixelId($pixel_id): self
+    {
+        $this->pixel_id = $pixel_id;
+        return $this;
+    }
+    
+    public function setTestCode($test_code): self
+    {
+        $this->test_code = $test_code;
+        return $this;
+    }
+
     public function sendEvents(): PromiseInterface
     {
-        $eventRequest = (new EventRequestAsync(config('conversions-api.pixel_id')))
+        $pixelId = $this->pixel_id ? $this->pixel_id : config('conversions-api.pixel_id'));
+        $eventRequest = (new EventRequestAsync($pixelId)
             ->setEvents($this->events);
 
-        if ($testCode = config('conversions-api.test_code')) {
+        $testCode = $this->test_code ? $this->test_code : config('conversions-api.test_code');
+        if ($testCode) {
             $eventRequest->setTestEventCode($testCode);
         }
 
