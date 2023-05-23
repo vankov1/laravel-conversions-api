@@ -15,11 +15,12 @@ class ConversionsApi
     protected EventCollection $events;
     protected UserData $userData;
 
-    public function __construct()
+    public function __construct($access_token = NULL)
     {
         $this->events = new EventCollection();
         $this->setUserData(DefaultUserData::create());
-        Api::init(null, null, config('conversions-api.access_token'), false);
+        $token = $access_token ? $access_token : config('conversions-api.access_token');
+        Api::init(null, null, $token, false);
     }
 
     public function setUserData(UserData $userData): self
